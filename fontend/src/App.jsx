@@ -9,6 +9,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ProjectList from "./pages/saleadmin/ProjectList"
 import CreateProject from "./pages/saleadmin/createproject"
 import RequestProjectCreation from "./pages/saleadmin/RequestProjectCreation"
+import ListApprove from "./pages/saleadmin/listwaitingaprove"
 export default function App() {
   return (
     <BrowserRouter>
@@ -36,6 +37,15 @@ export default function App() {
         <Route path="/sale-admin/request-project-creation/:projectId" element={<RequestProjectCreation />} />
         {/* Optional: A route without projectId if you want to allow requests without linking to an existing one */}
         <Route path="/sale-admin/request-project-creation" element={<RequestProjectCreation />} />
+
+        <Route
+          path="/sale-admin/listwaitingapprove"
+          element={
+            <ProtectedRoute allowRoles={["sale_admin"]}>
+              <ListApprove />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/sale-admin/create-project"
           element={

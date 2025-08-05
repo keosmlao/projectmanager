@@ -239,11 +239,10 @@ export default function ProjectList() {
           {statusTabs.map((status) => (
             <button
               key={status}
-              className={`px-5 py-2 rounded-full border-2 transition-all duration-300 ${
-                selectedStatus === status
-                  ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                  : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
-              }`}
+              className={`px-5 py-2 rounded-full border-2 transition-all duration-300 ${selectedStatus === status
+                ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200"
+                }`}
               onClick={() => setSelectedStatus(status)}
             >
               {status}
@@ -345,13 +344,13 @@ export default function ProjectList() {
                     ຊື່ໂຄງການ
                   </th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ແຂວງ
+                    ບ້ານ
                   </th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ເມືອງ
                   </th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ບ້ານ
+                    ແຂວງ
                   </th>
                   <th className="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     ຜູ້ປະສານ
@@ -377,18 +376,19 @@ export default function ProjectList() {
                     <td className="p-4 whitespace-nowrap font-medium text-gray-900">
                       {p.project_name}
                     </td>
-                    <td className="p-4 whitespace-nowrap text-gray-600">{p.province}</td>
-                    <td className="p-4 whitespace-nowrap text-gray-600">{p.district}</td>
-                    <td className="p-4 whitespace-nowrap text-gray-600">{p.village}</td>
+                    <td className="p-4 whitespace-nowrap text-gray-600">{p.village_name}</td>
+                    <td className="p-4 whitespace-nowrap text-gray-600">{p.district_name}</td>
+                    <td className="p-4 whitespace-nowrap text-gray-600">{p.province_name}</td>
                     <td className="p-4 whitespace-nowrap text-gray-600">{p.coordinator}</td>
                     <td className="p-4 whitespace-nowrap text-gray-600">{p.phone}</td>
-                    <td className="p-4 whitespace-nowrap w-48">
+                    <td className="p-4 whitespace-nowrap w-60">
                       <Select
                         options={statusOptions}
                         value={statusOptions.find((opt) => opt.value === p.status)}
                         onChange={(selectedOpt) =>
                           handleStatusChange(p.id, selectedOpt ? selectedOpt.value : "")
                         }
+                        isDisabled={p.request_status !== 0} // 👉 ปิดการแก้ไขถ้า request_status ≠ 0
                         classNamePrefix="react-select"
                         menuPortalTarget={document.body}
                         styles={{
@@ -396,6 +396,8 @@ export default function ProjectList() {
                           control: (base) => ({
                             ...base,
                             minHeight: '36px',
+                            backgroundColor: p.request_status !== 0 ? '#f1f5f9' : base.backgroundColor, // เทาอ่อนเมื่อ disabled
+                            cursor: p.request_status !== 0 ? 'not-allowed' : 'default',
                           }),
                         }}
                       />
@@ -411,7 +413,8 @@ export default function ProjectList() {
                             <FiTrash className="text-lg" />
                           </button>
                         )}
-                        {p.status === "ຂັ້ນຕອນດຳເນີນໂຄງການ" && (
+
+                        {p.status === "ຂັ້ນຕອນດຳເນີນໂຄງການ" && p.request_status === 0 && (
                           <button
                             onClick={() => handleRequestProjectCreation(p.id)}
                             className="text-blue-600 hover:text-blue-900 bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition-colors duration-200"
@@ -420,7 +423,13 @@ export default function ProjectList() {
                             <FiFilePlus className="text-lg" />
                           </button>
                         )}
+
+                        {p.request_status === 1 && p.approve_status_1 === 0 && (
+                          <h4 className="text-red-600 font-semibold">ລໍຖ້າອະນຸມັດໂຄງການ</h4>
+
+                        )}
                       </div>
+
                     </td>
                   </tr>
                 ))}
@@ -447,11 +456,10 @@ export default function ProjectList() {
               <button
                 key={i}
                 onClick={() => setPage(i + 1)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  page === i + 1
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${page === i + 1
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
               >
                 {i + 1}
               </button>

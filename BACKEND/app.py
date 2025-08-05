@@ -95,7 +95,14 @@ def get_villages():
 def get_projects():
     with get_conn() as conn:
         cur = conn.cursor(cursor_factory=RealDictCursor)
-        cur.execute("SELECT * FROM odg_projects ORDER BY created_at DESC")
+        cur.execute("""
+                        SELECT id, project_name,a.province,b.name_1 as province_name, district,c.name_1 as district_name, village,
+                        d.name_1 as village_name,coordinator, phone, image_url, a.status, created_at, project_description, start_date, end_date, request_status,
+                        case when approve_status_1=0 then 'ລໍຖ້າອະນຸມັດ' else 'ລໍຖ້າບັນຊີດຳເນີນການ' end as p_status,request_status=1 , approve_status_1,acc_approve
+                        FROM public.odg_projects a
+                        left join erp_province b on b.code=a.province
+                        left join erp_amper c on c.code=a.district and c.province=a.province
+                        left join erp_tambon d on d.code=a.village and d.amper=a.district and d.province=a.province""")
         data = cur.fetchall()
     return jsonify({"data": data, "success": True})
 
@@ -208,7 +215,20 @@ def create_project_request():
         conn.commit()
 
     return jsonify({"success": True, "message": "Request submitted and project updated."})
-
+# 📌 GET all projects
+@app.route("/api/projectwaitingapprove", methods=["GET"])
+def get_projectwaitingapprove():
+    with get_conn() as conn:
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("""SELECT id, project_name,a.province,b.name_1 as province_name, district,c.name_1 as district_name, village,
+                        d.name_1 as village_name,coordinator, phone, image_url, a.status, created_at, project_description, start_date, end_date, request_status, 
+                        case when approve_status_1=0 then 'ລໍຖ້າອະນຸມັດ' else 'ລໍຖ້າບັນຊີດຳເນີນການ' end as p_status FROM public.odg_projects a
+                        left join erp_province b on b.code=a.province
+                        left join erp_amper c on c.code=a.district and c.province=a.province
+                        left join erp_tambon d on d.code=a.village and d.amper=a.district and d.province=a.province
+                        where request_status=1 and approve_status_1=0 and acc_approve=0""")
+        data = cur.fetchall()
+    return jsonify({"data": data, "success": True})
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=5000)

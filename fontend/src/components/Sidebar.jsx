@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Home, Folder, BarChart2, CheckSquare, LogOut, Menu, X, User } from "lucide-react"; // Imported all potentially useful icons
+import { Home, Folder, BarChart2, CheckSquare, LogOut, Menu, X, User, CheckCircle } from "lucide-react"; // Imported all potentially useful icons
 
 export default function Sidebar({ username, role, onLogout }) {
   const navigate = useNavigate();
@@ -18,7 +18,9 @@ export default function Sidebar({ username, role, onLogout }) {
       case "/sale-admin/listproject":
         return <Folder size={20} />; // Project/folder icon
       case "/sale-admin/reports":
-        return <BarChart2 size={20} />; // Chart/report icon
+        return <CheckCircle size={20} />; // Chart/report icon
+      case "/sale-admin/listwaitingapprove":
+        return <CheckCircle size={20} />; // Chart/report icon
       case "/sale-manager/approvals":
         return <CheckSquare size={20} />; // Approval/checkbox icon
       default:
@@ -30,8 +32,8 @@ export default function Sidebar({ username, role, onLogout }) {
     sale_admin: [
       { label: "Dashboard", path: "/sale-admin" },
       { label: "ໂຄງການ", path: "/sale-admin/listproject" },
-      { label: "ລາຍການຂໍອະນຸມັດ", path: "/sale-admin/reports" },
-      { label: "Reports", path: "/sale-admin/reports" },
+      { label: "ລາຍການຂໍອະນຸມັດ", path: "/sale-admin/listwaitingapprove" },
+      // { label: "Reports", path: "/sale-admin/reports" },
     ],
     sale_manager: [
       { label: "Manager Panel", path: "/sale-manager" },
@@ -72,15 +74,14 @@ export default function Sidebar({ username, role, onLogout }) {
       {/* Sidebar Main Content */}
       <aside
         id="main-sidebar" // ID for accessibility linking
-        className={`fixed top-0 left-0 h-full w-64 bg-slate-800 text-slate-100 flex flex-col p-6 transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-auto z-40 shadow-2xl md:shadow-none`}
+        className={`fixed top-0 left-0 h-full w-64 bg-slate-800 text-slate-100 flex flex-col p-6 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out md:translate-x-0 md:static md:h-auto z-40 shadow-2xl md:shadow-none`}
         aria-label="Main navigation"
       >
         {/* Sidebar Header / Brand / Logo Area */}
         <div className="flex items-center justify-between pb-6 mb-6 border-b border-slate-700/50"> {/* Added bottom padding and border */}
           <div className="text-2xl font-extrabold text-blue-400 tracking-wide select-none"> {/* Added select-none */}
-            ODG System
+            ODG Project
           </div>
           {/* Close button for mobile inside the sidebar itself */}
           <button
@@ -104,7 +105,7 @@ export default function Sidebar({ username, role, onLogout }) {
                   setIsOpen(false); // Close sidebar on mobile after navigation
                 }}
                 className={`flex items-center gap-3 w-full text-left px-4 py-2.5 rounded-lg transition-all duration-200 ease-in-out font-medium
-                  ${isActive 
+                  ${isActive
                     ? "bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg" // Active state with gradient and larger shadow
                     : "text-slate-300 hover:bg-slate-700 hover:text-white" // Inactive state
                   }
